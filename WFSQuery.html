@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WFS</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="http://localhost:2001/css/ol.css" type="text/css">
+    <script src="http://localhost:2001/build/ol-debug.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<script>
+    //添加地图
+    var projection = ol.proj.get('EPSG:3857');
+    var projectionExtent = projection.getExtent();
+    var size = ol.extent.getWidth(projectionExtent) / 256;
+    var resolutions = new Array();
+    var matrixIds = new Array();
+    for (var z = 0; z < 18; ++z) {
+        resolutions[z] = size / Math.pow(2, z);
+        matrixIds[z] = 'EPSG:900913:' + z;
+    }
+    //GIST 基础地图资源
+    var source_reproduction = new ol.source.WMTS({
+        url:  "http://gist.sz95000.com/tiles/wmts",
+        matrixSet: 'EPSG:900913',
+        format: 'image/png',
+        projection: projection,
+        layer: "vector",
+        tileGrid: new ol.tilegrid.WMTS({
+            origin: ol.extent.getTopLeft(projectionExtent),
+            resolutions: resolutions,
+            matrixIds: matrixIds
+        }),
+        tileLoadFunction: function (imageTile, src) {
+            var index = src.indexOf("?");
+            var hash = src.slice(index).toUpperCase();
+            imageTile.getImage().src = src.slice(0, index) + hash;
+
+        },
+        style: 'default',
+        wrapX: true
+    });
+    //符号组
+    var styles = {
+        '主干路': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'green',
+                width: 3
+            })
+        }),
+        '次干路':new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'blue',
+                width: 3
+            })
+        }),
+        '支路': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 3
+            })
+        }),
+        '高速公路': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'palegodenrod',
+                width: 3
+            })
+        }),
+        '街坊路': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'chartreuse',
+                width: 3
+            })
+        }),
+        '快速路': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'tan',
+                width: 3
+            })
+        })
+    };
+    var styleFunction = function(feature) {
+        return styles[feature.getProperties().道路等级];
+    };
+
+/*    var vectorSource = new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        url: function(extent) {
+            return 'http://192.168.0.6:9898/geoserver/szroad/wfs?service=WFS&' +
+                    'version=1.1.0&request=GetFeature&typename=szroad:ptroad&' +
+                    'outputFormat=application/json&srsname=EPSG:4326&' +
+                    'bbox=' + extent.join(',') + ',EPSG:3857';
+        },
+        strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+            maxZoom: 19
+        }))
+    });*/
+
+    var vectorSource = new ol.source.Vector();
+    var vector = new ol.layer.Vector({
+        source: vectorSource,
+        style:styleFunction
+    });
+/*    var vector = new ol.layer.Vector({
+        source: vectorSource,
+        style: styleFunction
+    });*/
+    var map = new ol.Map({
+        layers: [ vector,
+            new ol.layer.Tile({
+                opacity: 0.5,
+                source: source_reproduction,
+                extent:ol.proj.transformExtent([112.6920,21.2389,115.6737,24.0274],'EPSG:4326', 'EPSG:3857')
+            })
+        ],
+        target: document.getElementById('map'),
+        view: new ol.View({
+            center:  ol.proj.transform([114.018, 22.671], 'EPSG:4326', 'EPSG:3857'),
+            maxZoom: 19,
+            zoom: 12
+        })
+    });
+
+    // generate a GetFeature request
+    var f = ol.format.ogc.filter;
+    var featureRequest = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureNS: 'http://192.168.0.50:9898/szroad',
+        featurePrefix: 'szroad',
+        featureTypes: ['ptroad'],
+        outputFormat: 'application/json',
+        filter: f.equalTo('城市道路', '公路')
+
+    });
+
+    // then post the request and add the received features to a layer
+    fetch('http://192.168.0.6:9898/geoserver/szroad/wfs', {
+        method: 'POST',
+        body: new XMLSerializer().serializeToString(featureRequest)
+    }).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        var features = new ol.format.GeoJSON().readFeatures(json,{featureProjection: 'EPSG:3857'});
+        vectorSource.addFeatures(features);
+        //map.getView().fit(vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
+    });
+</script>
+</body>
+</html>

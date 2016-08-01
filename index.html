@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+		<title>ol 加载地图</title>
+		<script type="text/javascript" src="OpenLayers.js"></script>
+	</head>
+
+	<body>
+	<input type="button" value="标点" onclick="addMarker()">
+		<input type="button" value="标线" onclick="addLine()">
+		<input type="button" value="标面" onclick="addPolygon()">
+		<input type="button" value="清除" onclick="clearFeature()">
+		<input type="button" id="wmsButton" value="添加WMS路网" onclick="addOrRemoveWMS()">点击地图可获取鼠标点击位置屏幕坐标及经纬度
+		<div id="map" style="width:1024px;height:600px;"></div>
+
+		<script type="text/javascript">
+			get_my_url = function(bounds) {
+				var res = this.map.getResolution();
+				var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+				var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+				var z = this.map.getZoom()+8;
+				
+				var path = "?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER="+this.type+"&STYLE=default&TILEMATRIXSET=ESPG:900913&TILEMATRIX=ESPG:900913:"+z+"&TILEROW="+y+"&TILECOL="+x+"&FORMAT=image/png";
+
+				
+				var url = this.url;
+				if (url instanceof Array) {
+					url = this.selectUrl(path, url);
+				}
+				return url + path;
+			}
+
+			var resolutions =  [
+			611.4962265625,
+			305.74811328125,
+			152.874056640625,
+			76.4370283203125,
+			38.21851416015625,
+			19.10925708007813,
+			9.554628540039063,
+			4.777314270019532,
+			2.388657135009766,
+			1.194328567504883,
+			0.5971642837524414
+			];
+				var vectorGroup = 
+					[
+					new OpenLayers.Layer.TMS(
+						 "矢量底图1-18级",
+						 [
+							  "http://gist.sz95000.com/tiles/wmts"
+						 ],
+						 {
+							type : "vector",
+							getURL : get_my_url,
+							isBaseLayer : true,
+							maxExtent : new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+							resolutions :  resolutions,
+							wrapDateLine : true,
+							displayOutsideMaxExtent : true,
+							buffer : 1
+						 }
+					)
+					
+				];
+
+
+			var map = new OpenLayers.Map("map", {
+				maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+				resolutions : resolutions,
+				units:'m',
+				projection: new OpenLayers.Projection("EPSG:900913"),
+				displayProjection: new OpenLayers.Projection("EPSG:4326"),
+				controls:[],
+				theme:null
+			});
+			map.addLayers(vectorGroup);
+			var pointLayer = new OpenLayers.Layer.Markers("markers");//实例化的Layer.Vector对象，用来画点（Point）。当然，如果可以根据你的业务需要，把点、线、面都画在一个Layer.Vector对象上面。
+			var lineLayer = new OpenLayers.Layer.Vector("Line Layer");//实例化的Layer.Vector对象，用来线（Line）当然。如果可以根据你的业务需要，把点、线、面都画在一个Layer.Vector对象上面。
+            var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");//实例化的Layer.Vector对象，用来多边形（Polygon）。当然，如果可以根据你的业务需要，把点、线、面都画在一个Layer.Vector对象上面。
+			map.addLayers([lineLayer,polygonLayer,pointLayer]);
+			
+
+			//定位中心点
+			center = new OpenLayers.LonLat(114.034428, 22.535805);
+			center.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+			zoom = 5;
+			map.setCenter(center, zoom);
+
+			map.addControl(new OpenLayers.Control.Navigation({
+				dragPanOptions: {
+					enableKinetic: true,
+					documentDrag: true
+				},
+				zoomBoxEnabled: true,
+				zoomWheelEnabled: true,
+				zoomBoxKeyMask: OpenLayers.Handler.MOD_SHIFT
+			}));
+			map.events.register('click',  map,  function (e) {
+				 // 显示地图屏幕坐标
+				var str = "[Screen]:" + e.xy.x + "," + e.xy.y+"\n";
+				// 屏幕坐标向地图坐标的转换
+				var lonlat = map.getLonLatFromViewPortPx(e.xy);
+				str += "[Map]:" + lonlat.lat + "," + lonlat.lon;
+				alert(str);
+			});
+
+			function addMarker(){
+				//创建Marker 位置
+				var pos = new OpenLayers.LonLat(114.034428, 22.535805);
+				pos.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				//创建Marker对象
+				var marker = new OpenLayers.Marker ( pos );
+				//注册鼠标事件
+				marker.events.register( 'mousedown',  marker, popup);
+				//添加marker到marker layer
+				pointLayer.addMarker(marker);
+			}
+			function popup(e){
+				 // 显示地图屏幕坐标
+				alert(0);
+			}
+			function addLine(){
+				var style_green = { 
+				strokeColor: "red", 
+				strokeWidth: 5, 
+				strokeDashstyle: "dashdot", 
+				pointRadius: 6, 
+				pointerEvents: "visiblePainted" 
+				};  
+				var pointList = []; 
+				
+				newPoint = new OpenLayers.Geometry.Point(114.034428, 22.535805); 
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				newPoint = new OpenLayers.Geometry.Point(114.044428, 22.535805);
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				newPoint = new OpenLayers.Geometry.Point(114.044428, 22.537805); 
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				newPoint = new OpenLayers.Geometry.Point(114.034428, 22.537805); 
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				
+				lineFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(pointList),null,style_green); 
+				lineLayer.addFeatures([lineFeature]); 
+				
+			}
+			function addPolygon(){
+				var style_green = { 
+				strokeColor: "red", 
+				strokeWidth: 5, 
+				strokeDashstyle: "dashdot", 
+				pointRadius: 6, 
+				pointerEvents: "visiblePainted" 
+				};  
+				var pointList = []; 
+				
+				newPoint = new OpenLayers.Geometry.Point(114.034428, 22.535805); 
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				newPoint = new OpenLayers.Geometry.Point(114.044428, 22.535805);
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				newPoint = new OpenLayers.Geometry.Point(114.044428, 22.537805); 
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				newPoint = new OpenLayers.Geometry.Point(114.034428, 22.537805); 
+				newPoint.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				pointList.push(newPoint); 
+				
+				//lineFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(pointList),null,style_green); 
+				//lineLayer.addFeatures([lineFeature]); 
+				var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
+				var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
+				var style_polygon = {
+					strokeWidth: 2,
+					strokeOpacity: 0.8,
+					fillOpacity: 0.8
+				};
+				polygonFeature = new OpenLayers.Feature.Vector(polygon,null,style_polygon);
+				
+				polygonLayer.addFeatures([polygonFeature]); 
+				
+			}
+			function clearFeature(){
+				pointLayer.clearMarkers();
+				lineLayer.removeAllFeatures();
+				polygonLayer.removeAllFeatures();
+			}
+			function addWMS(){
+				var layer = new OpenLayers.Layer.WMS(
+					"路网", "http://gist.sz95000.com/server/gist/wms",
+					{
+						LAYERS: "gist:道路设施_路段",
+						STYLES: '',
+						format: 'image/png',
+						tiled: true,
+						transparent: true,
+						tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+					},
+					{
+						buffer: 1,
+						displayOutsideMaxExtent: true,
+						isBaseLayer: false,
+						yx : {'EPSG:900913' : true}
+					} 
+				);
+				map.addLayer(layer);
+			}
+			function removeWMS(){
+				var length = map.layers.length;
+				for (var i = 0; i < length;i++) {
+					var layer = map.layers[i];
+					if("路网" == layer.name)
+						map.removeLayer(layer);
+				}
+			}
+			function addOrRemoveWMS(){
+				var bvalue = document.getElementById("wmsButton").value;
+				if(bvalue == "添加WMS路网"){
+					document.getElementById("wmsButton").value = "移除WMS路网";
+					addWMS();
+				}else{
+					document.getElementById("wmsButton").value = "添加WMS路网";
+					removeWMS();
+				}
+			}
+		</script>
+		
+	</body>
+</html>

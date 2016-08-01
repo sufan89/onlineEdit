@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+       <title>Marker Animation</title>
+      <link rel="stylesheet" href="ol.css" type="text/css">
+         <style>
+             .ol-attribution{
+                   display:none
+              }
+        </style>
+       <style>
+           .ol-attribution{
+               display:none
+           }
+       </style>
+       <script src="ol.js"></script>
+     </head>
+   <body>
+     <div id="map" class="map"></div>
+     <label for="speed">
+       speed:&nbsp;
+      <input id="speed" type="range" min="1" max="999" step="10" value="1">
+    </label>
+    <button id="start-animation">Start Animation</button>
+     <script>       //GIS服务地址
+          var url = 'http://127.0.0.1:8399/arcgis/rest/services/beijingnewmap/MapServer';
+        //一组经纬度，用于在地图上打点
+       var coords = [
+                  [116.429001,39.922701],
+                 [116.430001,39.906901],
+                [116.422001,39.903501],
+                  [116.413001,39.899501],
+                   [116.390001,39.899101],
+                 [116.379001,39.898801],
+                 [116.369001,39.898601],
+                 [116.367667,39.888861]
+            ];
+
+       //轨迹图层
+         var lineFeature = new ol.Feature({
+                type: 'route',
+                    geometry: new ol.geom.LineString(coords)
+          });
+          //运动点
+        var geoMarker = new ol.Feature({
+                type: 'geoMarker',
+                    geometry: new ol.geom.Point(coords[0])
+         });
+        //开始点
+         var startMarker = new ol.Feature({
+                 type: 'icon',
+                     geometry: new ol.geom.Point(coords[0])
+          });
+          //结束点
+          var endMarker = new ol.Feature({
+                 type: 'icon',
+                     geometry: new ol.geom.Point(coords[coords.length-1])
+          });
+
+          //一组样式
+           var styles = {
+                'route': new ol.style.Style({
+                  stroke: new ol.style.Stroke({
+                    width: 8, color: [255, 0, 0, 0.8]
+               })
+            }),
+             'icon': new ol.style.Style({
+                  image: new ol.style.Icon({
+                     anchor: [0.5, 1],
+                         src: 'icon.png'
+              })
+          }),
+          'geoMarker': new ol.style.Style({
+                 image: new ol.style.Circle({
+                     radius: 10,
+                       snapToPixel: false,
+                         fill: new ol.style.Fill({color: 'black'}),
+                        stroke: new ol.style.Stroke({
+                    color: 'white', width: 2
+               })
+               })
+            })
+           };
+
+          var animating = false;
+           var speed, now;
+        var speedInput = document.getElementById('speed');
+        var startButton = document.getElementById('start-animation');
+
+         var vectorLayer = new ol.layer.Vector({
+                 source: new ol.source.Vector({
+                features: [lineFeature, geoMarker, startMarker, endMarker]
+          }),
+           style: function(feature) {
+                  // hide geoMarker if animation is active
+                  if (animating && feature.get('type') === 'geoMarker') {
+                       return null;
+                      }
+                 return styles[feature.get('type')];
+                }
+           });
+
+           //将轨迹的中心点设置为地图的中心点
+          var center = [coords[coords.length/2]];
+           var map = new ol.Map({
+                 target: document.getElementById('map'),
+                     loadTilesWhileAnimating: true,
+                    view: new ol.View({
+                  projection: 'EPSG:4326',
+                      center: center,
+                       zoom: 14,
+                       minZoom: 2,
+                      maxZoom: 19
+            }),
+             layers: [
+                   new ol.layer.Tile({
+                          source: new ol.source.TileArcGISRest({
+                         url: url
+                })
+                }),
+                vectorLayer
+            ]
+          });
+
+         var moveFeature = function(event) {
+                 var vectorContext = event.vectorContext;
+                var frameState = event.frameState;
+
+                 if (animating) {
+                       var elapsedTime = frameState.time - now;
+                       // here the trick to increase speed is to jump some indexes
+                       // on lineString coordinates
+                      var index = Math.round(speed * elapsedTime / 1000);
+
+                     if (index >= coords.length) {
+                            stopAnimation(true);
+                             return;
+                        }
+
+                       var currentPoint = new ol.geom.Point(coords[index]);
+                      var feature = new ol.Feature(currentPoint);
+                      vectorContext.drawFeature(feature, styles.geoMarker);
+                    }
+                // tell OL3 to continue the postcompose animation
+                map.render();
+               };
+
+           function startAnimation() {
+                 if (animating) {
+                      stopAnimation(false);
+                    } else {
+                       animating = true;
+                      now = new Date().getTime();
+                      speed = speedInput.value;
+                       startButton.textContent = 'Cancel Animation';
+                      // hide geoMarker
+                     geoMarker.setStyle(null);
+                       // just in case you pan somewhere else
+                       map.getView().setCenter(center);
+                     map.on('postcompose', moveFeature);
+                       map.render();
+                     }
+              }
+
+
+           /**
+             * @param {boolean} ended end of animation.
+             */
+          function stopAnimation(ended) {
+                animating = false;
+                 startButton.textContent = 'Start Animation';
+
+                // if animation cancelled set the marker at the beginning
+              var coord = ended ? coords[coords.length-1] : coords[0];
+                 /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
+                   .setCoordinates(coord);
+                //remove listener
+                map.un('postcompose', moveFeature);
+             }
+
+           startButton.addEventListener('click', startAnimation, false);
+         </script>
+   </body>
+ </html>
+
+需要注意的是我这里使用的是经纬度，所以在构建地图的时候需要指定坐标系projection: 'EPSG:4326'，否则地图是出不来的。
+
+下面的样式是去除地图右下角OpenLayers的logo的：
+
+
