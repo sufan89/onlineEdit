@@ -6,181 +6,6 @@ var serviceUrl = 'http://222.134.70.138:6080/arcgis/rest/services/zbxzq/MapServe
 var layerindex = '0';
 
 var esrijsonFormat = new ol.format.EsriJSON();
-
-var styleCache = {
-    '370305': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(225, 225, 225, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(0, 0, 0, 255)',
-            width: 0.4
-        })
-    }),
-    '370304': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(255, 0, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(56, 168, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0
-        })
-    }),
-    '370321': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370323': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370306': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370302': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370303': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370306': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370302': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322103000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322109000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322108000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322101000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322102000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322104000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322106000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322107000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-    '370322110000': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(168, 112, 0, 255)'
-        }),
-        stroke: new ol.style.Stroke({
-            color: 'rgba(110, 110, 110, 255)',
-            width: 0.4
-        })
-    }),
-};
-
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 
@@ -204,22 +29,35 @@ var map = new ol.Map({
     overlays: [overlay]
 });
 var vectorSource = new ol.source.Vector({});
-//县图层渲染函数
+
 var vector = new ol.layer.Vector({
     source: vectorSource,
-    style: function (feature) {
-        var classify = feature.get('XZQDM');
-        return styleCache[classify];
-    }
+    style: styleFuncton
 });
+//图层渲染函数
+function styleFuncton(feature) {
+    var classify = feature.get('XZQDM');
+    var fileColor=randomRgbaColor();
+    var featureStyle=new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: fileColor
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'rgba(0, 0, 0, 255)',
+            width: 0.4
+        })
+    });
+    return featureStyle;
+}
 map.addLayer(vector);
 //Dom渲染后加载图层数据
 window.onload = function () {
     getNewFeature('0', '');
 };
+var highlightSource=new ol.source.Vector();
 //高亮显示图层
 var featureOverlay = new ol.layer.Vector({
-    source: new ol.source.Vector(),
+    source: highlightSource,
     map: map,
     style: new ol.style.Style({
         fill: new ol.style.Fill({
@@ -273,31 +111,33 @@ map.on('click', function (evt) {
         if (xzqcode.length == 6) //点击的是县
         {
             layerindex = '1';
+            selectXzqCode = xzqcode;
             getNewFeature(layerindex, xzqcode);
         }
         else if (xzqcode.length = 12 && xzqcode.substring(xzqcode.length - 3) == '000')//点击的是镇
         {
             layerindex = '2';
+            selectXzqCode = xzqcode;
             getNewFeature(layerindex, xzqcode);
         }
         else //点击的是村
         {
-            layerindex = '3';
+
         }
-        selectXzqCode = xzqcode;
+
     }
     else {//返回上一级
         if (layerindex == '0') //当前处于最上一级，不操作
         {
-            layerindex = '0';
+
         }
-        else if (layerindex == 1) {
+        else if (layerindex == '1') {
             layerindex = '0';
-            getNewFeature(layerindex, selectXzqCode);
+            getNewFeature(layerindex,'');
         }
-        else if (layerindex == 2) {
+        else if (layerindex == '2') {
             layerindex = '1';
-            getNewFeature(layerindex, selectXzqCode);
+            getNewFeature(layerindex, selectXzqCode.substring(0,selectXzqCode.length-6));
         }
     }
 });
@@ -307,6 +147,7 @@ function getNewFeature(layerIndex, strXzqCode) {
     clearElement();
     //清除图形
     vectorSource.clear();
+    // highlightSource.clear();
     var url = serviceUrl + layerIndex;
     switch (layerIndex) {
         case '0'://县
@@ -316,7 +157,7 @@ function getNewFeature(layerIndex, strXzqCode) {
             url = url + '/query?f=json&where=XZQDM+like+\'' + strXzqCode + '%25\'&outFields=*';
             break;
         case '2'://村
-            url = url + '/query?f=json&where=XZQDM+like+\'' + strXzqCode.substr(strXzqCode.length - 3) + '%25\'&outFields=*';
+            url = url + '/query?f=json&where=XZQDM+like+\'' + strXzqCode.substr(0,strXzqCode.length - 3) + '%25\'&outFields=*';
             break;
     }
     $.ajax({
@@ -378,4 +219,11 @@ function clearElement() {
         }
     }
 }
-
+//随机生成RGBA颜色
+function randomRgbaColor() {
+    var r = Math.floor(Math.random() * 256);
+    var g = Math.floor(Math.random() * 256);
+    var b = Math.floor(Math.random() * 256);
+    var alpha = Math.random();
+    return 'rgb('+r+','+g+','+b+','+alpha+')';
+}
