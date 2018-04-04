@@ -2,7 +2,17 @@
 <html style="height: 100%">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="http://localhost:2000/css//ol.css" type="text/css">
+    <link rel="stylesheet" href="http://localhost:2000/css/ol.css" type="text/css">
+    <style>
+        #marker {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #088;
+            border-radius: 10px;
+            background-color: #0FF;
+            opacity: 0.5;
+        }
+    </style>
 </head>
 <body style="height: 100%; margin: 0">
 <div id="map" class="map"></div>
@@ -11,8 +21,9 @@
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
 </div>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-<script type="text/javascript" src="../lib/jquery-1.9.1.js"></script>
+<!--<div id="marker" title="Marker"></div>-->
+<div id="markers"></div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 <script type="text/javascript" src="http://localhost:2000/build/ol-debug.js"></script>
 </body>
 
