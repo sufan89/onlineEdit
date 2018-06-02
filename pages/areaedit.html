@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://192.168.1.182:2000/css/ol.css" type="text/css">
+    <script src="http://192.168.1.182:2000/build/ol-debug.js"></script>
+    <title>智慧地球区域管理</title>
+    <style>
+        #area
+        {
+            position: relative;
+        }
+        #btnArea{
+            position: absolute;
+            left: 0;
+            top:0;
+        }
+    </style>
+</head>
+<body>
+<div id="area">
+<div id="map" class="map"></div>
+    <div id="btnArea">
+        <input id="btnSelect" type="button" value="选择"  onclick="btnSelect()"/>
+        <input id="btnUpdate" type="button" value="修改"  onclick="btnModify()"/>
+        <input id="btnDelete" type="button" value="删除"  onclick="btnDelete()"/>
+        <input id="btnAddPoint" type="button" value="新增点"  onclick="btnAddPoint()"/>
+        <input id="btnAddLine" type="button" value="新增线"  onclick="btnAddLine()"/>
+        <input id="btnAddPolygon" type="button" value="新增面"  onclick="btnAddPolygon()"/>
+        <input id="btnSave" type="button" value="保存"  onclick="btnSave()"/>
+    </div>
+</div>
+</body>
+<script src="../js/areaedit.js"></script>
+</html>
