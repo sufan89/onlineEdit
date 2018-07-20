@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="http://192.168.1.182:2000/css/ol.css" type="text/css">
-    <script src="http://192.168.1.182:2000/build/ol-debug.js"></script>
+    <link rel="stylesheet" href="http://localhost:2503/css/ol.css" type="text/css">
+    <script src="http://localhost:2503/build/ol.js"></script>
     <title>智慧地球区域管理</title>
     <style>
         #area
@@ -14,6 +15,10 @@
             position: absolute;
             left: 0;
             top:0;
+        }
+        #selectBaseMap
+        {
+            position: absolute;
         }
     </style>
 </head>
@@ -28,6 +33,11 @@
         <input id="btnAddLine" type="button" value="新增线"  onclick="btnAddLine()"/>
         <input id="btnAddPolygon" type="button" value="新增面"  onclick="btnAddPolygon()"/>
         <input id="btnSave" type="button" value="保存"  onclick="btnSave()"/>
+        <select id="selectBaseMap">
+            <option value="gd">高德地图</option>
+            <option value="bd">百度地图</option>
+            <option value="osm">OSM地图</option>
+        </select>
     </div>
 </div>
 </body>
