@@ -1,34 +1,4 @@
-//添加地图
-var projection = ol.proj.get('EPSG:3857');
-var projectionExtent = projection.getExtent();
-var size = ol.extent.getWidth(projectionExtent) / 256;
-var resolutions = new Array();
-var matrixIds = new Array();
-for (var z = 0; z < 18; ++z) {
-    resolutions[z] = size / Math.pow(2, z);
-    matrixIds[z] = 'EPSG:900913:' + z;
-}
-//GIST 基础地图资源
-var source_reproduction = new ol.source.WMTS({
-    url:  "http://gist.sz95000.com/tiles/wmts",
-    matrixSet: 'EPSG:900913',
-    format: 'image/png',
-    projection: projection,
-    layer: "vector",
-    tileGrid: new ol.tilegrid.WMTS({
-        origin: ol.extent.getTopLeft(projectionExtent),
-        resolutions: resolutions,
-        matrixIds: matrixIds
-    }),
-    tileLoadFunction: function (imageTile, src) {
-        var index = src.indexOf("?");
-        var hash = src.slice(index).toUpperCase();
-        imageTile.getImage().src = src.slice(0, index) + hash;
 
-    },
-    style: 'default',
-    wrapX: true
-});
 //符号组
 var image = new ol.style.Circle({
     radius: 5,
@@ -151,10 +121,11 @@ var modify = new ol.interaction.Modify({
 
 var map = new ol.Map({
     interactions: ol.interaction.defaults().extend([select, modify]),
-    layers: [ wfslayer,
+    layers: [
         new ol.layer.Tile({
             opacity: 1,
-            source: source_reproduction,
+            source: new ol.source.AMap({
+            }),
             extent:ol.proj.transformExtent([112.6920,21.2389,115.6737,24.0274],'EPSG:4326', 'EPSG:3857')
         })
     ],
