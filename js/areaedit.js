@@ -124,9 +124,9 @@ var map = new ol.Map({
     layers: [
         new ol.layer.Tile({
             opacity: 1,
-            source: new ol.source.AMap({
+            source: new ol.source.BaiduMap({
             }),
-            extent:ol.proj.transformExtent([112.6920,21.2389,115.6737,24.0274],'EPSG:4326', 'EPSG:3857')
+            // extent:ol.proj.transformExtent([112.6920,21.2389,115.6737,24.0274],'EPSG:4326', 'EPSG:3857')
         })
     ],
     target: document.getElementById('map'),
