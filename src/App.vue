@@ -23,7 +23,17 @@
     text-align: center;
     color: #2c3e50;
     position: absolute;
+    top: 20px;
+    left: 40px;
     float: left;
     z-index: 1;
+  }
+
+  body {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 100%;
   }
 </style>
