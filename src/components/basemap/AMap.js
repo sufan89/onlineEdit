@@ -1,8 +1,9 @@
 import XYZ from 'ol/source/XYZ'
 import {get} from 'ol/proj'
+import {inherits} from 'ol'
 
-let AMap = function (options) {
-  let opt = options ? options : {}
+let AMap = function AMap(options) {
+  let opt = options === undefined ? options : {}
   let url
   if (opt.mapType === 'sat') {
     url = 'http://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}'
@@ -14,7 +15,10 @@ let AMap = function (options) {
     cacheSize: opt.cacheSize,
     projection: get('EPSG:3857'),
     url: url,
-    wrapX: opt.wrapX !== undefined ? opt.wrapX : true
+    wrapX: opt.wrapX !== undefined ? opt.wrapX : true,
+    maxZoom: opt.maxZoom !== undefined ? opt.maxZoom : 18,
+    minZoom: opt.minZoom !== undefined ? opt.minZoom : 0
   })
 }
+inherits(AMap, XYZ)
 export default AMap

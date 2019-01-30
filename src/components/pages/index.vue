@@ -18,6 +18,7 @@
   // import BingMaps from 'ol/Source/BingMaps.js'
   import AMap from '../basemap/AMap'
   import {transform} from 'ol/proj'
+
   export default {
     name: 'home',
     data() {
@@ -81,7 +82,9 @@
       // }
       this.layers.push(new TileLayer({
         visible: true,
-            source: new AMap({})
+        source: new AMap({
+          cacheSize: 256
+        })
       }))
       this.map = new Map({
         layers: this.layers,
