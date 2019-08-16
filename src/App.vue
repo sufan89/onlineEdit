@@ -23,8 +23,8 @@
     text-align: center;
     color: #2c3e50;
     position: absolute;
-    top: 20px;
-    left: 40px;
+    width:100%;
+    height:100%;
     float: left;
     z-index: 1;
   }

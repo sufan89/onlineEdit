@@ -4,6 +4,10 @@ import {inherits} from 'ol'
 
 let AMap = function AMap(options) {
   let opt = options === undefined ? options : {}
+  console.log(opt)
+  if (!opt.hasOwnProperty('mapType')) {
+    opt.mapType = ''
+  }
   let url
   if (opt.mapType === 'sat') {
     url = 'http://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}'
@@ -12,7 +16,7 @@ let AMap = function AMap(options) {
   }
   XYZ.call(this, {
     crossOrigin: 'anonymous',
-    cacheSize: opt.cacheSize,
+    cacheSize: opt.cacheSize !== undefined ? opt.cacheSize : 256,
     projection: get('EPSG:3857'),
     url: url,
     wrapX: opt.wrapX !== undefined ? opt.wrapX : true,
