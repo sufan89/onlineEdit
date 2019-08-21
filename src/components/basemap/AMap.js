@@ -2,11 +2,9 @@ import XYZ from 'ol/source/XYZ'
 import {get} from 'ol/proj'
 import {inherits} from 'ol'
 
-let AMap = function AMap(options) {
-  let opt = options === undefined ? options : {}
-  console.log(opt)
-  if (!opt.hasOwnProperty('mapType')) {
-    opt.mapType = ''
+const AMap = function AMap(options) {
+  const opt = options === undefined ? options : {
+    mapType: ''
   }
   let url
   if (opt.mapType === 'sat') {
