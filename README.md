@@ -1,6 +1,6 @@
-# geoedit
+# GeoEdit
 
-> A Vue.js project
+> 基于OpenLayer是的在线编辑功能页面
 
 ## Build Setup
 
