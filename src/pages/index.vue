@@ -5,7 +5,7 @@
   import Map from 'ol/Map.js'
   import View from 'ol/View.js'
   import TileLayer from 'ol/layer/Tile.js'
-  import AMap from '../basemap/AMap'
+  import AMap from '../components/basemap/AMap'
   import {transform} from 'ol/proj'
 
   export default {
